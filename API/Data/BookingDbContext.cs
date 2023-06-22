@@ -36,37 +36,37 @@ namespace API.Data
                 .WithOne(education => education.University)
                 .HasForeignKey(education => education.UniversityGuid);
 
-            //employee - education (one to one)
+            //Employee - Education (one to one)
             modelBuilder.Entity<Employee>()
                 .HasOne(employee => employee.Education)
                 .WithOne(education => education.Employee)
                 .HasForeignKey<Education>(education => education.Guid);
 
-            //employee - booking (one to many)
+            //Employee - Booking (one to many)
             modelBuilder.Entity<Employee>()
                 .HasMany(employee => employee.Bookings)
                 .WithOne(booking => booking.Employee)
                 .HasForeignKey(booking => booking.EmployeeGuid);
 
-            //booking - room (many to one)
+            //Booking - Room (one to many)
             modelBuilder.Entity<Booking>()
                 .HasOne(booking => booking.Room)
                 .WithMany(room => room.Bookings)
                 .HasForeignKey(booking => booking.RoomGuid);
 
-            //employee - account (one to one)
+            //Employee - Account (one to one)
             modelBuilder.Entity<Employee>()
                 .HasOne(employee => employee.Account)
                 .WithOne(account => account.Employee)
                 .HasForeignKey<Account>(account => account.Guid);
 
-            //account - accountRole (many to one)
+            //Account - AccountRole (one to many)
             modelBuilder.Entity<Account>()
                 .HasMany(account => account.AccountRoles)
                 .WithOne(accountRole => accountRole.Account)
                 .HasForeignKey(accountRole => accountRole.AccountGuid);
 
-            //accountRole - role (many to one)
+            //accountRole - role (one to many)
             modelBuilder.Entity<AccountRole>()
                 .HasOne(accountrole => accountrole.Role)
                 .WithMany(role => role.AccountRoles)
