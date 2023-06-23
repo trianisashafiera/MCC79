@@ -19,7 +19,7 @@ namespace API.Repositories
 
         public Room? GetByGuid(Guid guid)
         {
-            return _context.Set<Room>().Find(room);
+            return _context.Set<Room>().Find(guid);
         }
 
         public Room Create(Room room)
