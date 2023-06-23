@@ -9,7 +9,7 @@ namespace API.Contracts
         Room Create(Room room);
 
         bool Update(Room room);
-        bool Delete(Room room);
+        bool Delete(Guid guid);
 
     }
 }
