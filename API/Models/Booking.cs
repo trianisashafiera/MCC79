@@ -27,8 +27,9 @@ namespace API.Models
         [Column("status")]
         public StatusLevel Status { get; set; }
 
-        public Employee Employee { get; set; }
-        public Room Room { get; set; }
+        //Cardinality
+        public Employee? Employee { get; set; }
+        public Room? Room { get; set; }
 
     }
 }
