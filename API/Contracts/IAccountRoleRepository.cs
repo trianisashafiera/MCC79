@@ -8,6 +8,6 @@ namespace API.Contracts
         AccountRole? GetByGuid(Guid guid);
         AccountRole Create(AccountRole accountRole);
         bool Update(AccountRole accountRole);
-        bool Delete(AccountRole accountRole);
+        bool Delete(Guid guid);
     }
 }
