@@ -7,7 +7,6 @@ namespace API.Models
     public class University : BaseEntity
     {
        
-
         [Column ("code", TypeName = "nvarchar(50)")]
         public string Code { get; set; }
 
