@@ -14,7 +14,7 @@ namespace API.Models
         public string Degree { get; set; }
 
         [Column("gpa")]
-        public float GPA { get; set; }
+        public double GPA { get; set; }
 
         [Column("university_id")]
         public Guid UniversityGuid { get; set; }

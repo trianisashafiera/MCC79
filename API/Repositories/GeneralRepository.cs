@@ -53,15 +53,10 @@ where TEntity : class
         }
     }
 
-    public bool Delete(Guid guid)
+    public bool Delete(TEntity entity)
     {
         try
         {
-            var entity = GetByGuid(guid);
-            if (entity is null)
-            {
-                return false;
-            }
             _context.Set<TEntity>().Remove(entity);
             _context.SaveChanges();
             return true;
