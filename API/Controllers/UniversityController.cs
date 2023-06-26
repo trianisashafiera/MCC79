@@ -1,6 +1,8 @@
 ﻿using API.Contracts;
 using API.Models;
+using API.Utilities.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers;
 
@@ -18,9 +20,20 @@ public class UniversityController : GeneralController<IUniversityRepository, Uni
         var universities = _repository.GetByName(name);
         if(!universities.Any())
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<University>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "No universities found with the given name"
+            });
         }
-        return Ok(universities);
+        return Ok(new ResponseHandler<IEnumerable<University>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Universities found",
+            Data = universities
+        });
     }
 
  }
