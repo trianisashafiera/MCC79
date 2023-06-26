@@ -60,7 +60,6 @@ where TEntity : class
             {
                 return false;
             }
-
             _context.Set<TEntity>().Remove(entity);
             _context.SaveChanges();
             return true;

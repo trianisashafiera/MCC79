@@ -6,7 +6,7 @@ namespace API.Controllers;
 
     [ApiController]
     [Route("api/employees")]
-public class EmployeeController : GeneralController<Employee>
+public class EmployeeController : GeneralController<IEmployeeRepository, Employee>
 {
     public EmployeeController(IEmployeeRepository repository) : base(repository) { }
 }

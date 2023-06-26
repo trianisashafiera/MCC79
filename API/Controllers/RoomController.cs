@@ -6,7 +6,7 @@ namespace API.Controllers;
 
     [ApiController]
     [Route("api/rooms")]
-public class RoomController : GeneralController<Room>
+public class RoomController : GeneralController<IRoomRepository, Room>
 {
     public RoomController(IRoomRepository repository) : base(repository) { }
 }

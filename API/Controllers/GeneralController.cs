@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-    public class GeneralController<TEntity> : ControllerBase
-        where TEntity : class
+    public class GeneralController<TRepository, TEntity> : ControllerBase
+    where TRepository : IGeneralRepository<TEntity>
+    where TEntity : class
     {
-        private readonly IGeneralRepository<TEntity> _repository;
-        public GeneralController(IGeneralRepository<TEntity> repository)
+        protected readonly TRepository _repository;
+        public GeneralController(TRepository repository)
         {
             _repository = repository;
         }
@@ -23,10 +24,10 @@ namespace API.Controllers;
             return Ok(entity);
         }
 
-        [HttpGet("{guid}")]
-        public IActionResult GetByGuid(Guid guid)
+        [HttpGet("{id}")]
+        public IActionResult GetByGuid(Guid id)
         {
-            var entity = _repository.GetByGuid(guid);
+            var entity = _repository.GetByGuid(id);
             if (entity is null)
             {
                 return NotFound();
@@ -54,10 +55,10 @@ namespace API.Controllers;
             return Ok();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(Guid guid)
+        [HttpDelete ("{id}")]
+        public IActionResult Delete(Guid id)
         {
-            var isDeleted = _repository.Delete(guid);
+            var isDeleted = _repository.Delete(id);
             if (!isDeleted)
             {
                 return NotFound();
