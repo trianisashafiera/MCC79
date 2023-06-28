@@ -33,7 +33,7 @@ public class RoleService
         var role = _roleRepository.GetByGuid(guid);
         if (role is null)
         {
-            return null; // Booking not found
+            return null; // Role not found
         }
 
         var toDto = new NewRoleDto
@@ -42,7 +42,7 @@ public class RoleService
             Name = role.Name
         };
 
-        return toDto; // Booking found
+        return toDto; // Role found
     }
 
     public NewRoleDto? CreateRole(NewRoleDto newRoleDto)
@@ -58,7 +58,7 @@ public class RoleService
         var createdRole = _roleRepository.Create(role);
         if (createdRole is null)
         {
-            return null; // Booking not created
+            return null; // Role not created
         }
 
         var toDto = new NewRoleDto
@@ -67,7 +67,7 @@ public class RoleService
             Name = createdRole.Name
         };
 
-        return toDto; // Booking created
+        return toDto; // Role created
     }
 
     public int UpdateRole(NewRoleDto updatRoleDto)
@@ -75,7 +75,7 @@ public class RoleService
         var isExist = _roleRepository.IsExist(updatRoleDto.Guid);
         if (!isExist)
         {
-            // Booking not found
+            // Role not found
             return -1;
         }
 
@@ -92,7 +92,7 @@ public class RoleService
         var isUpdate = _roleRepository.Update(role);
         if (!isUpdate)
         {
-            return 0; // Booking not updated
+            return 0; // Role not updated
         }
 
         return 1;
@@ -103,14 +103,14 @@ public class RoleService
         var isExist = _roleRepository.IsExist(guid);
         if (!isExist)
         {
-            return -1; // Booking not found
+            return -1; // Role not found
         }
 
         var role = _roleRepository.GetByGuid(guid);
         var isDelete = _roleRepository.Delete(role!);
         if (!isDelete)
         {
-            return 0; // Booking not deleted
+            return 0; // Role not deleted
         }
 
         return 1;

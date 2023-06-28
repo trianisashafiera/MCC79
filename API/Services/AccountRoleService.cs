@@ -34,7 +34,7 @@ namespace API.Services;
         var accountRole = _accountRoleRepository.GetByGuid(guid);
         if (accountRole is null)
         {
-            return null; // Booking not found
+            return null; // AccountRole not found
         }
 
         var toDto = new NewAccountRoleDto
@@ -44,7 +44,7 @@ namespace API.Services;
             RoleGuid = accountRole.RoleGuid
         };
 
-        return toDto; // Booking found
+        return toDto; // AccountRole found
     }
 
     public NewAccountRoleDto? CreateAccountRole(NewAccountRoleDto newAccountRoleDto)
@@ -61,7 +61,7 @@ namespace API.Services;
         var createdAccountRole = _accountRoleRepository.Create(accountRole);
         if (createdAccountRole is null)
         {
-            return null; // Booking not created
+            return null; // AccountRole not created
         }
 
         var toDto = new NewAccountRoleDto
@@ -71,7 +71,7 @@ namespace API.Services;
             RoleGuid = createdAccountRole.RoleGuid
         };
 
-        return toDto; // Booking created
+        return toDto; // AccountRole created
     }
 
     public int UpdateAccountRole(NewAccountRoleDto updateAccountRoleDto)
@@ -79,7 +79,7 @@ namespace API.Services;
         var isExist = _accountRoleRepository.IsExist(updateAccountRoleDto.Guid);
         if (!isExist)
         {
-            // Booking not found
+            // AccountRole not found
             return -1;
         }
 
@@ -97,7 +97,7 @@ namespace API.Services;
         var isUpdate = _accountRoleRepository.Update(accountRole);
         if (!isUpdate)
         {
-            return 0; // Booking not updated
+            return 0; // AccountRole not updated
         }
 
         return 1;
@@ -108,14 +108,14 @@ namespace API.Services;
         var isExist = _accountRoleRepository.IsExist(guid);
         if (!isExist)
         {
-            return -1; // Booking not found
+            return -1; // AccountRole not found
         }
 
         var accountRole = _accountRoleRepository.GetByGuid(guid);
         var isDelete = _accountRoleRepository.Delete(accountRole!);
         if (!isDelete)
         {
-            return 0; // Booking not deleted
+            return 0; // AccountRole not deleted
         }
 
         return 1;

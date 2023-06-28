@@ -1,4 +1,6 @@
-﻿namespace API.DTOs.Universities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace API.DTOs.Universities;
     public class GetUniversityDto
     {
         public Guid Guid { get; set; }

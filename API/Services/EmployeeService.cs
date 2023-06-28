@@ -23,7 +23,7 @@ namespace API.Services;
                                            new NewEmployeeDto
                                            {
                                                Guid = employee.Guid,
-                                               Nik = employee.Nik,
+                                               /*Nik = employee.Nik,*/
                                                FirstName = employee.FirstName,
                                                LastName = employee.LastName,
                                                BirthDate = employee.BirthDate,
@@ -41,13 +41,13 @@ namespace API.Services;
         var employee = _employeeRepository.GetByGuid(guid);
         if (employee is null)
         {
-            return null; // Booking not found
+            return null; // Employee not found
         }
 
         var toDto = new NewEmployeeDto
         {
             Guid = employee.Guid,
-            Nik = employee.Nik,
+            /*Nik = employee.Nik,*/
             FirstName = employee.FirstName,
             LastName = employee.LastName,
             BirthDate = employee.BirthDate,
@@ -57,7 +57,7 @@ namespace API.Services;
             PhoneNumber = employee.PhoneNumber
         };
 
-        return toDto; // Booking found
+        return toDto; // Employee found
     }
 
     public NewEmployeeDto? CreateEmployee(NewEmployeeDto newEmployeeDto)
@@ -65,7 +65,7 @@ namespace API.Services;
         var employee = new Employee
         {
             Guid = new Guid(),
-            Nik = newEmployeeDto.Nik,
+            Nik = GenerateNik(),
             FirstName = newEmployeeDto.FirstName,
             LastName = newEmployeeDto.LastName,
             BirthDate = newEmployeeDto.BirthDate,
@@ -80,13 +80,13 @@ namespace API.Services;
         var createdEmployee = _employeeRepository.Create(employee);
         if (createdEmployee is null)
         {
-            return null; // Booking not created
+            return null; // Employee not created
         }
 
         var toDto = new NewEmployeeDto
         {
             Guid = createdEmployee.Guid,
-            Nik = createdEmployee.Nik,
+          /*  Nik = createdEmployee.Nik,*/
             FirstName = createdEmployee.FirstName,
             LastName = createdEmployee.LastName,
             BirthDate = createdEmployee.BirthDate,
@@ -96,7 +96,7 @@ namespace API.Services;
             PhoneNumber = createdEmployee.PhoneNumber
         };
 
-        return toDto; // Booking created
+        return toDto; // Employee created
     }
 
     public int UpdateEmployee(NewEmployeeDto updateEmployeeDto)
@@ -104,7 +104,7 @@ namespace API.Services;
         var isExist = _employeeRepository.IsExist(updateEmployeeDto.Guid);
         if (!isExist)
         {
-            // Booking not found
+            // Employee not found
             return -1;
         }
 
@@ -113,7 +113,7 @@ namespace API.Services;
         var employee = new Employee
         {
             Guid = updateEmployeeDto.Guid,
-            Nik = updateEmployeeDto.Nik,
+          /*  Nik = updateEmployeeDto.Nik,*/
             FirstName = updateEmployeeDto.FirstName,
             LastName = updateEmployeeDto.LastName,
             BirthDate = updateEmployeeDto.BirthDate,
@@ -128,7 +128,7 @@ namespace API.Services;
         var isUpdate = _employeeRepository.Update(employee);
         if (!isUpdate)
         {
-            return 0; // Booking not updated
+            return 0; // Employee not updated
         }
 
         return 1;
@@ -139,17 +139,35 @@ namespace API.Services;
         var isExist = _employeeRepository.IsExist(guid);
         if (!isExist)
         {
-            return -1; // Booking not found
+            return -1; // Employee not found
         }
 
         var employee = _employeeRepository.GetByGuid(guid);
         var isDelete = _employeeRepository.Delete(employee!);
         if (!isDelete)
         {
-            return 0; // Booking not deleted
+            return 0; // Employee not deleted
         }
 
         return 1;
+    }
+
+    public string GenerateNik()
+    {
+        var employees = _employeeRepository.GetAll();
+        if (!employees.Any())
+        {
+            // Jika data employee kosong
+            return "1111";
+        }
+        var lastEmployee = employees.Last();
+
+        int lastNik = int.Parse(lastEmployee.Nik);
+        int newNik = lastNik + 1;
+
+        string nik = newNik.ToString();
+
+        return nik;
     }
 }
 

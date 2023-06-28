@@ -1,8 +1,13 @@
-﻿namespace API.DTOs.Accounts
+﻿using API.Utilities.Enums;
+using System.ComponentModel.DataAnnotations;
+
+namespace API.DTOs.Accounts
 {
     public class NewAccountDto
     {
         public Guid Guid { get; set; }
+        [Required]
+        [PasswordPolicy]
         public string Password { get; set; }
         public bool IsDeleted { get; set; }
         public int Otp { get; set; }

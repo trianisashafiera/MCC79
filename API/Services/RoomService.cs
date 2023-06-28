@@ -35,7 +35,7 @@ public class RoomService
         var room = _roomRepository.GetByGuid(guid);
         if (room is null)
         {
-            return null; // Booking not found
+            return null; // Room not found
         }
 
         var toDto = new NewRoomDto
@@ -46,7 +46,7 @@ public class RoomService
             Capacity = room.Capacity
         };
 
-        return toDto; // Booking found
+        return toDto; // Room found
     }
 
     public NewRoomDto? CreateRoom(NewRoomDto newRoomDto)
@@ -64,7 +64,7 @@ public class RoomService
         var createdRoom = _roomRepository.Create(room);
         if (createdRoom is null)
         {
-            return null; // Booking not created
+            return null; // Room not created
         }
 
         var toDto = new NewRoomDto
@@ -75,7 +75,7 @@ public class RoomService
             Capacity = createdRoom.Capacity
         };
 
-        return toDto; // Booking created
+        return toDto; // Room created
     }
 
     public int UpdateRoom(NewRoomDto updatRoomDto)
@@ -83,7 +83,7 @@ public class RoomService
         var isExist = _roomRepository.IsExist(updatRoomDto.Guid);
         if (!isExist)
         {
-            // Booking not found
+            // Room not found
             return -1;
         }
 
@@ -102,7 +102,7 @@ public class RoomService
         var isUpdate = _roomRepository.Update(room);
         if (!isUpdate)
         {
-            return 0; // Booking not updated
+            return 0; // Room not updated
         }
 
         return 1;
@@ -113,14 +113,14 @@ public class RoomService
         var isExist = _roomRepository.IsExist(guid);
         if (!isExist)
         {
-            return -1; // Booking not found
+            return -1; // Room not found
         }
 
         var room = _roomRepository.GetByGuid(guid);
         var isDelete = _roomRepository.Delete(room!);
         if (!isDelete)
         {
-            return 0; // Booking not deleted
+            return 0; // Room not deleted
         }
 
         return 1;

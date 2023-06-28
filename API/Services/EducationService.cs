@@ -25,7 +25,7 @@ namespace API.Services;
                                                    Guid = education.Guid,
                                                    Major = education.Major,
                                                    Degree = education.Degree,
-                                                   Gpa = education.GPA,
+                                                   Gpa = education.Gpa,
                                                    UniversityGuid = education.UniversityGuid
                                                }).ToList();
 
@@ -37,7 +37,7 @@ namespace API.Services;
             var education = _educationRepository.GetByGuid(guid);
             if (education is null)
             {
-                return null; // Booking not found
+                return null; // Education not found
             }
 
             var toDto = new NewEducationDto
@@ -45,21 +45,21 @@ namespace API.Services;
                 Guid = education.Guid,
                 Major = education.Major,
                 Degree = education.Degree,
-                Gpa = education.GPA,
+                Gpa = education.Gpa,
                 UniversityGuid = education.UniversityGuid
             };
 
-            return toDto; // Booking found
-        }
+            return toDto; // Education found
+    }
 
         public NewEducationDto? CreateEducation(NewEducationDto newEducationDto)
         {
             var education = new Education
             {
-                Guid = new Guid(),
+                Guid = newEducationDto.Guid,
                 Major = newEducationDto.Major,
                 Degree = newEducationDto.Degree,
-                GPA = newEducationDto.Gpa,
+                Gpa = newEducationDto.Gpa,
                 UniversityGuid = newEducationDto.UniversityGuid,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
@@ -68,28 +68,28 @@ namespace API.Services;
             var createdEducation = _educationRepository.Create(education);
             if (createdEducation is null)
             {
-                return null; // Booking not created
-            }
+                return null; // Education not created
+        }
 
             var toDto = new NewEducationDto
             {
                 Guid = createdEducation.Guid,
                 Major = createdEducation.Major,
                 Degree = createdEducation.Degree,
-                Gpa = createdEducation.GPA,
+                Gpa = createdEducation.Gpa,
                 UniversityGuid = createdEducation.UniversityGuid
             };
 
-            return toDto; // Booking created
-        }
+            return toDto; // Education created
+    }
 
         public int UpdateEducation(NewEducationDto updateEducationDto)
         {
             var isExist = _educationRepository.IsExist(updateEducationDto.Guid);
             if (!isExist)
             {
-                // Booking not found
-                return -1;
+            // Education not found
+            return -1;
             }
 
             var getEducation = _educationRepository.GetByGuid(updateEducationDto.Guid);
@@ -99,7 +99,7 @@ namespace API.Services;
                 Guid = updateEducationDto.Guid,
                 Major = updateEducationDto.Major,
                 Degree = updateEducationDto.Degree,
-                GPA = updateEducationDto.Gpa,
+                Gpa = updateEducationDto.Gpa,
                 UniversityGuid = updateEducationDto.UniversityGuid,
                 ModifiedDate = DateTime.Now,
                 CreatedDate = getEducation!.CreatedDate
@@ -108,8 +108,8 @@ namespace API.Services;
             var isUpdate = _educationRepository.Update(education);
             if (!isUpdate)
             {
-                return 0; // Booking not updated
-            }
+                return 0; // Education not updated
+        }
 
             return 1;
         }
@@ -119,15 +119,15 @@ namespace API.Services;
             var isExist = _educationRepository.IsExist(guid);
             if (!isExist)
             {
-                return -1; // Booking not found
-            }
+                return -1; // Education not found
+        }
 
             var education = _educationRepository.GetByGuid(guid);
             var isDelete = _educationRepository.Delete(education!);
             if (!isDelete)
             {
-                return 0; // Booking not deleted
-            }
+                return 0; // Education not deleted
+        }
 
             return 1;
         }

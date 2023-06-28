@@ -150,4 +150,28 @@ public class AccountController : ControllerBase
             Message = "Successfully deleted"
         });
     }
+
+    [Route("register")]
+    [HttpPost]
+    public IActionResult Register(RegisterAccountDto registerAccountDto)
+    {
+        var createdRegisterAccount = _service.Register(registerAccountDto);
+        if (createdRegisterAccount is null)
+        {
+            return BadRequest(new ResponseHandler<RegisterAccountDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Data not created"
+            });
+        }
+
+        return Ok(new ResponseHandler<RegisterAccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully created",
+            Data = createdRegisterAccount
+        });
+    }
 }
