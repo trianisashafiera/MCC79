@@ -169,6 +169,7 @@ public class AccountService
         {
             return null;
         }
+
         University university = new University
         {
             Guid = new Guid(),
@@ -201,8 +202,8 @@ public class AccountService
         {
             Guid = employee.Guid,
             Password = Hashing.HashPassword(registerAccountDto.Password)
-
         };
+      
 
         var createdAccount = _accountRepository.Create(account);
         if (createdAccount is null)
@@ -229,7 +230,65 @@ public class AccountService
 
         return toDto;
     }
+
+    public LoginAccountDto? Login(LoginAccountDto loginAccountDto)
+    {
+        var employee = _employeeRepository.GetAccountByEmail(loginAccountDto.Email);
+        if (employee == null)
+        {
+            throw new Exception("Account not found");
+        }
+
+        var account = _accountRepository.GetByGuid(employee.Guid);
+        var isPasswordValid = Hashing.ValidatePassword(loginAccountDto.Password, account.Password);
+        if (!isPasswordValid)
+        {
+            throw new Exception("Invalid Password");
+        }
+
+        var toDto = new LoginAccountDto
+        {
+            Email = loginAccountDto.Email,
+            Password = loginAccountDto.Password,
+        };
+
+        return toDto;
+    }
+
+    public OtpResponseDto? GetByEmail(string email)
+    {
+        var account = _employeeRepository.GetAll()
+            .FirstOrDefault(e => e.Email.Contains(email));
+
+        if (account != null)
+        {
+            return new OtpResponseDto
+            {
+                Email = account.Email,
+                Guid = account.Guid
+            };
+        }
+
+        return null;
+    }
+    public int GenerateOtp()
+    {
+        Random random = new Random();
+        HashSet<int> uniqueDigits = new HashSet<int>();
+
+        while (uniqueDigits.Count < 6)
+        {
+            int digit = random.Next(0, 9);
+            uniqueDigits.Add(digit);
+        }
+
+        int generatedOtp = uniqueDigits.Aggregate(0, (acc, digit) => acc * 10 + digit);
+
+        return generatedOtp;
+    }
+
+
 }
-    
+
 
 
