@@ -1,14 +1,19 @@
 ﻿using API.Contracts;
 using API.DTOs.Rooms;
 using API.Models;
+using API.Utilities.Enums;
 
 namespace API.Services;
 public class RoomService
 {
     private readonly IRoomRepository _roomRepository;
-    public RoomService(IRoomRepository roomRepository)
+    private readonly IBookingRepository _bookingRepository;
+
+    public RoomService(IRoomRepository roomRepository,
+                       IBookingRepository bookingRepository)
     {
         _roomRepository = roomRepository;
+        _bookingRepository = bookingRepository;
     }
 
     public IEnumerable<NewRoomDto> GetRoom()
@@ -125,5 +130,79 @@ public class RoomService
 
         return 1;
     }
+
+    /* public IEnumerable<NewRoomDto> RoomAvailable()
+     {
+         var bookings = _bookingRepository.GetAll();
+         if (bookings == null)
+         {
+             return null; // Room not found
+         }
+         var rooms = _roomRepository.GetAll();
+
+         var roomAvailable = (
+                from room in rooms
+                join booking in bookings on room.Guid equals booking.Guid
+                where booking.StartDate <= DateTime.Now.Date && booking.EndDate >= DateTime.Now
+                select new NewRoomDto
+                {
+                    Guid = room.Guid,
+                    Name = room.Name,
+                    Floor = room.Floor,
+                    Capacity = room.Capacity,
+                }
+            ).ToList();
+         return roomAvailable;
+     }*/
+
+    public IEnumerable<UnUsedRoomDto> GetUnusedRoom()
+    {
+        var today = DateTime.Today;
+
+        var rooms = _roomRepository.GetAll().ToList();
+
+
+        var usedRooms = from room in _roomRepository.GetAll()
+                        join booking in _bookingRepository.GetAll()
+                        on room.Guid equals booking.RoomGuid
+                        where booking.Status == StatusLevel.OnGoing || (booking.StartDate.DayOfYear == today.DayOfYear && booking.Status == StatusLevel.UpComing)
+                        select new UnUsedRoomDto
+                        {
+                            RoomGuid = room.Guid,
+                            RoomName = room.Name,
+                            Floor = room.Floor,
+                            Capacity = room.Capacity,
+                        };
+        int i = 0;
+        List<Room> tmpRooms = new List<Room>(rooms);
+
+        foreach (var room in rooms)
+        {
+
+            foreach (var usedRoom in usedRooms)
+            {
+                if (room.Guid == usedRoom.RoomGuid)
+                {
+                    tmpRooms.RemoveAt(i);
+                    break;
+                }
+            }
+            i++;
+        }
+
+        var unusedRooms = from room in tmpRooms
+                          select new UnUsedRoomDto
+                          {
+                              RoomGuid = room.Guid,
+                              RoomName = room.Name,
+                              Floor = room.Floor,
+                              Capacity = room.Capacity
+                          };
+
+        return unusedRooms;
+
+
+    }
 }
+
 

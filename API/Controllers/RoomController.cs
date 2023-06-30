@@ -1,9 +1,11 @@
 ﻿using API.Contracts;
 using API.DTOs.Rooms;
 using API.Models;
+using API.Repositories;
 using API.Services;
 using API.Utilities.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 
 namespace API.Controllers;
@@ -13,6 +15,7 @@ namespace API.Controllers;
 public class RoomController : ControllerBase
 {
     private readonly RoomService _service;
+
 
     public RoomController(RoomService service)
     {
@@ -46,8 +49,8 @@ public class RoomController : ControllerBase
     [HttpGet("{guid}")]
     public IActionResult GetByGuid(Guid guid)
     {
-        var role = _service.GetRoom(guid);
-        if (role is null)
+        var room = _service.GetRoom(guid);
+        if (room is null)
         {
             return NotFound(new ResponseHandler<NewRoomDto>
             {
@@ -62,7 +65,7 @@ public class RoomController : ControllerBase
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data found",
-            Data = role
+            Data = room
         });
     }
 
@@ -150,4 +153,51 @@ public class RoomController : ControllerBase
             Message = "Successfully deleted"
         });
     }
+
+    /*[HttpGet("availableRoom")]
+    public IActionResult UnUsed(UnUsedRoomDto unUsedRoomDto)
+    {
+        var entities = _service.GetUnusedRoom();
+        if (entities is null)
+        {
+            return NotFound(new ResponseHandler<UnUsedRoomDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<UnUsedRoomDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = entities
+        });*/
+    [HttpGet("unused")]
+    public IActionResult GetUnusedRoom()
+    {
+        var unusedRooms = _service.GetUnusedRoom();
+
+        if (unusedRooms.Count() == 0)
+        {
+            return Ok(new ResponseHandler<IEnumerable<UnUsedRoomDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "semua room sedang dipakai",
+                Data = unusedRooms
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<UnUsedRoomDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Room tersedia",
+            Data = unusedRooms
+        });
+    }
+
 }
