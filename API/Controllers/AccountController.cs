@@ -14,10 +14,20 @@ namespace API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly AccountService _service;
+    private readonly EmployeeService _employeeService;
+    private readonly EducationService _educationService;
+    private readonly UniversityService _universityService;
 
-    public AccountController(AccountService service)
+
+    public AccountController(AccountService service, 
+                             EmployeeService employeeService, 
+                             EducationService educationService, 
+                             UniversityService universityService)
     {
         _service = service;
+        _employeeService = employeeService;
+        _educationService = educationService;
+        _universityService = universityService;
     }
 
     [HttpGet]
@@ -221,7 +231,7 @@ public class AccountController : ControllerBase
     public IActionResult ForgetPassword(ForgetPasswordDto forgetPasswordDto)
     {
         // Get Employee By Email
-        var getEmployee = _EmployeeService.GetByEmail(forgetPasswordDto.Email)!;
+        var getEmployee = _employeeService.GetByEmail(forgetPasswordDto.Email)!;
         if (getEmployee is null)
         {
             return NotFound(new ResponseHandler<ForgetPasswordDto>
@@ -240,7 +250,7 @@ public class AccountController : ControllerBase
 
         // Update Otp, Expired Time, isUsed in Account
         var otpExpiredTime = DateTime.Now.AddMinutes(5);
-        var updateAccountDto = new UpdateAccountDto
+        var updateAccountDto = new NewAccountDto
         {
             Guid = getAccount!.Guid,
             Password = getAccount.Password,
