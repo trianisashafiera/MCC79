@@ -1,4 +1,5 @@
 ﻿using API.Contracts;
+using API.DTOs.Accounts;
 using API.DTOs.Employees;
 using API.Models;
 
@@ -23,7 +24,7 @@ namespace API.Services;
                                            new NewEmployeeDto
                                            {
                                                Guid = employee.Guid,
-                                               /*Nik = employee.Nik,*/
+                                               Nik = employee.Nik,
                                                FirstName = employee.FirstName,
                                                LastName = employee.LastName,
                                                BirthDate = employee.BirthDate,
@@ -47,7 +48,7 @@ namespace API.Services;
         var toDto = new NewEmployeeDto
         {
             Guid = employee.Guid,
-            /*Nik = employee.Nik,*/
+            Nik = employee.Nik,
             FirstName = employee.FirstName,
             LastName = employee.LastName,
             BirthDate = employee.BirthDate,
@@ -86,7 +87,7 @@ namespace API.Services;
         var toDto = new NewEmployeeDto
         {
             Guid = createdEmployee.Guid,
-          /*  Nik = createdEmployee.Nik,*/
+            Nik = createdEmployee.Nik,
             FirstName = createdEmployee.FirstName,
             LastName = createdEmployee.LastName,
             BirthDate = createdEmployee.BirthDate,
@@ -113,7 +114,7 @@ namespace API.Services;
         var employee = new Employee
         {
             Guid = updateEmployeeDto.Guid,
-          /*  Nik = updateEmployeeDto.Nik,*/
+            Nik = updateEmployeeDto.Nik,
             FirstName = updateEmployeeDto.FirstName,
             LastName = updateEmployeeDto.LastName,
             BirthDate = updateEmployeeDto.BirthDate,
@@ -168,6 +169,22 @@ namespace API.Services;
         string nik = newNik.ToString();
 
         return nik;
+    }
+    public OtpResponseDto? GetByEmail(string email)
+    {
+        var account = _employeeRepository.GetAll()
+            .FirstOrDefault(e => e.Email.Contains(email));
+
+        if (account != null)
+        {
+            return new OtpResponseDto
+            {
+                Email = account.Email,
+                Guid = account.Guid
+            };
+        }
+
+        return null;
     }
 }
 

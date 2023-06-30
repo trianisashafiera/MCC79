@@ -7,8 +7,8 @@ namespace API.DTOs.Employees
     {
 
         public Guid Guid { get; set; }
-        /*[Required]
-        public string Nik { get; set; }*/
+        [Required]
+        public string Nik { get; set; }
         [Required]
         public string FirstName { get; set; }
         public string? LastName { get; set; }
