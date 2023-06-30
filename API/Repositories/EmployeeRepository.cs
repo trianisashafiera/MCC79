@@ -3,7 +3,13 @@ using API.Data;
 using API.Models;
 
 namespace API.Repositories;
-    public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
+public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
+{
+    private readonly BookingDbContext _context;
+    public EmployeeRepository(BookingDbContext context) : base(context) { }
+
+    public IEnumerable<Employee> GetByEmail(string email)
     {
-        public EmployeeRepository(BookingDbContext context) : base(context) { }
+        return _context.Set<Employee>().Where(u => u.Email == email);
     }
+}
