@@ -131,30 +131,6 @@ public class RoomService
         return 1;
     }
 
-    /* public IEnumerable<NewRoomDto> RoomAvailable()
-     {
-         var bookings = _bookingRepository.GetAll();
-         if (bookings == null)
-         {
-             return null; // Room not found
-         }
-         var rooms = _roomRepository.GetAll();
-
-         var roomAvailable = (
-                from room in rooms
-                join booking in bookings on room.Guid equals booking.Guid
-                where booking.StartDate <= DateTime.Now.Date && booking.EndDate >= DateTime.Now
-                select new NewRoomDto
-                {
-                    Guid = room.Guid,
-                    Name = room.Name,
-                    Floor = room.Floor,
-                    Capacity = room.Capacity,
-                }
-            ).ToList();
-         return roomAvailable;
-     }*/
-
     public IEnumerable<UnUsedRoomDto> GetUnusedRoom()
     {
         var today = DateTime.Today;
