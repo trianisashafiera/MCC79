@@ -154,27 +154,6 @@ public class RoomController : ControllerBase
         });
     }
 
-    /*[HttpGet("availableRoom")]
-    public IActionResult UnUsed(UnUsedRoomDto unUsedRoomDto)
-    {
-        var entities = _service.GetUnusedRoom();
-        if (entities is null)
-        {
-            return NotFound(new ResponseHandler<UnUsedRoomDto>
-            {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
-            });
-        }
-
-        return Ok(new ResponseHandler<IEnumerable<UnUsedRoomDto>>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = entities
-        });*/
     [HttpGet("unused")]
     public IActionResult GetUnusedRoom()
     {
