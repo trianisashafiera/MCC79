@@ -3,13 +3,15 @@ using API.DTOs.Employees;
 using API.Models;
 using API.Services;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers;
-
-    [ApiController]
-    [Route("api/employees")]
+[ApiController]
+[Route("api/employees")]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 public class EmployeeController : ControllerBase
 {
     private readonly EmployeeService _service;
@@ -150,5 +152,54 @@ public class EmployeeController : ControllerBase
             Message = "Successfully deleted"
         });
     }
+
+    [HttpGet("getAllMaster")]
+
+    public IActionResult GetMaster()
+    {
+        var master = _service.GetMaster();
+        if (master is null)
+        {
+            return NotFound(new ResponseHandler<GetAllMasterDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<GetAllMasterDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = master
+        });
+    }
+
+    [HttpGet("getMaster/{guid}")]
+
+    public IActionResult GetMasterByGuid(Guid guid)
+    {
+        var masterGuid = _service.GetMasterByGuid(guid);
+        if (masterGuid is null)
+        {
+            return NotFound(new ResponseHandler<GetAllMasterDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data Not Found"
+            });
+        }
+
+        return Ok(new ResponseHandler<GetAllMasterDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = masterGuid
+        });
+    }
 }
+
 

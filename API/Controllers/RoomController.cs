@@ -4,14 +4,16 @@ using API.Models;
 using API.Repositories;
 using API.Services;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers;
-
-    [ApiController]
-    [Route("api/rooms")]
+[ApiController]
+[Route("api/rooms")]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 public class RoomController : ControllerBase
 {
     private readonly RoomService _service;

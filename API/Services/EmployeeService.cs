@@ -2,15 +2,32 @@
 using API.DTOs.Accounts;
 using API.DTOs.Employees;
 using API.Models;
+using API.Repositories;
+using API.Utilities.Handlers;
 
 namespace API.Services;
 
     public class EmployeeService
     {
     private readonly IEmployeeRepository _employeeRepository;
-    public EmployeeService(IEmployeeRepository employeeRepository)
+    private readonly IEducationRepository _educationRepository;
+    private readonly IUniversityRepository _universityRepository;
+    private readonly IAccountRepository _accountRepository;
+    private readonly IAccountRoleRepository _accountRoleRepository;
+    private readonly IRoleRepository _roleRepository;
+    public EmployeeService(IEmployeeRepository employeeRepository,
+                           IEducationRepository educationRepository,
+                           IUniversityRepository universityRepository,
+                           IAccountRepository accountRepository,
+                           IAccountRoleRepository accountRoleRepository,
+                           IRoleRepository roleRepository)
     {
         _employeeRepository = employeeRepository;
+        _educationRepository = educationRepository;
+        _universityRepository = universityRepository;
+        _accountRepository = accountRepository;
+        _accountRoleRepository = accountRoleRepository;
+        _roleRepository = roleRepository;
     }
 
     public IEnumerable<NewEmployeeDto> GetEmployee()
@@ -66,7 +83,6 @@ namespace API.Services;
         var employee = new Employee
         {
             Guid = new Guid(),
-            Nik = GenerateNik(),
             FirstName = newEmployeeDto.FirstName,
             LastName = newEmployeeDto.LastName,
             BirthDate = newEmployeeDto.BirthDate,
@@ -77,7 +93,7 @@ namespace API.Services;
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
         };
-
+        employee.Nik = GenerateHandler.Nik(_employeeRepository.GetLastEmployeeNik());
         var createdEmployee = _employeeRepository.Create(employee);
         if (createdEmployee is null)
         {
@@ -185,6 +201,48 @@ namespace API.Services;
         }
 
         return null;
+    }
+
+    public IEnumerable<GetAllMasterDto>? GetMaster()
+    {
+        var master = (from e in _employeeRepository.GetAll()
+                      join education in _educationRepository.GetAll() on e.Guid equals education.Guid
+                      join u in _universityRepository.GetAll() on education.UniversityGuid equals u.Guid
+                      join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                      join ar in _accountRoleRepository.GetAll() on a.Guid equals ar.AccountGuid
+                      join r in _roleRepository.GetAll() on ar.RoleGuid equals r.Guid
+
+
+                      select new GetAllMasterDto
+                      {
+                          Guid = e.Guid,
+                          FullName = e.FirstName + " " + e.LastName,
+                          Nik = e.Nik,
+                          BirthDate = e.BirthDate,
+                          Email = e.Email,
+                          HiringDate = e.HiringDate,
+                          PhoneNumber = e.PhoneNumber,
+                          Major = education.Major,
+                          Degree = education.Degree,
+                          Gpa = education.Gpa,
+                          UniversityName = u.Name,
+                          Role = r.Name,
+                      }).ToList();
+
+        if (!master.Any())
+        {
+            return null;
+        }
+        return master;
+    }
+
+    public GetAllMasterDto? GetMasterByGuid(Guid guid)
+    {
+        var master = GetMaster();
+
+        var masterByGuid = master.FirstOrDefault(master => master.Guid == guid);
+
+        return masterByGuid;
     }
 }
 

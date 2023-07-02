@@ -5,6 +5,7 @@ namespace API.DTOs.Accounts
 {
     public class NewAccountDto
     {
+        [Required]
         public Guid Guid { get; set; }
         [Required]
         [PasswordPolicy]

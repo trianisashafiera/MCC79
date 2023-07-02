@@ -3,9 +3,10 @@
 namespace API.Contracts;
 public interface IEmployeeRepository : IGeneralRepository<Employee>
 {
-    Employee? GetAccountByEmail(string email);
-    IEnumerable<Employee> GetByName(string name);
-    IEnumerable<Employee> GetByEmail(string email);
-    Employee? GetByEmailAndPhoneNumber(string data);
-    Employee? CheckEmail(string email);
+    public Employee? GetAccountByEmail(string email);
+    /* IEnumerable<Employee> GetByName(string name);
+     IEnumerable<Employee> GetByEmail(string email);*/
+    public Employee? GetByEmailAndPhoneNumber(string data);
+    public Employee? CheckEmail(string email);
+    string? GetLastEmployeeNik();
 }

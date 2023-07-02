@@ -1,10 +1,12 @@
-﻿using System.Net;
+﻿using System.Data;
+using System.Net;
 using API.Contracts;
 using API.DTOs.Universities;
 using API.Models;
 using API.Repositories;
 using API.Services;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +14,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/universities")]
+[Authorize(Roles = $"{nameof(RoleLevel.Manager)}")]
 public class UniversityController : ControllerBase
 {
     private readonly UniversityService _service;
@@ -22,6 +25,7 @@ public class UniversityController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult GetAll()
     {
         var entities = _service.GetUniversity();

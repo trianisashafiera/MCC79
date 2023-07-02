@@ -3,14 +3,16 @@ using API.DTOs.Roles;
 using API.Models;
 using API.Services;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers;
-
-    [ApiController]
-    [Route("api/role")]
-    public class RoleController : ControllerBase
+[ApiController]
+[Route("api/role")]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+public class RoleController : ControllerBase
     {
     private readonly RoleService _service;
 

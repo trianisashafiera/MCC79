@@ -1,14 +1,22 @@
 ﻿using API.Contracts;
 using API.DTOs.Bookings;
 using API.Models;
+using API.Repositories;
+
 
 namespace API.Services;
     public class BookingService
     {
         private readonly IBookingRepository _bookingRepository;
-        public BookingService(IBookingRepository bookingRepository)
+        private readonly IRoomRepository _roomRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+    public BookingService(IBookingRepository bookingRepository,
+                          IRoomRepository roomRepository,
+                          IEmployeeRepository employeeRepository)
         {
              _bookingRepository = bookingRepository;
+             _roomRepository = roomRepository;
+             _employeeRepository = employeeRepository;
         }
 
         public IEnumerable<NewBookingDto> GetBooking()
@@ -142,9 +150,144 @@ namespace API.Services;
             return 1;
         }
 
-        internal object GetBooking(string name)
+    public List<DetailBookingDto>? GetBookingDetails()
+    {
+        var bookings = _bookingRepository.GetBookingDetails();
+        var bookingDetails = bookings.Select(b => new DetailBookingDto
         {
-            throw new NotImplementedException();
-        }
+            Guid = b.Guid,
+            BookedNik = b.BookedNik,
+            BookedBy = b.BookedBy,
+            RoomName = b.RoomName,
+            StartDate = b.StartDate,
+            EndDate = b.EndDate,
+            Status = b.Status,
+            Remarks = b.Remarks
+        }).ToList();
+
+        return bookingDetails;
     }
+
+    public DetailBookingDto? GetBookingDetailsByGuid(Guid guid)
+    {
+        var relatedBooking = GetBookingDetails().SingleOrDefault(b => b.Guid == guid);
+        return relatedBooking;
+    }
+
+    public IEnumerable<GetBookingDurationDto> BookingDuration()
+    {
+        var bookings = _bookingRepository.GetAll();
+        var rooms = _roomRepository.GetAll();
+
+        var entities = (from booking in bookings
+                        join room in rooms on booking.RoomGuid equals room.Guid
+                        select new
+                        {
+                            guid = room.Guid,
+                            startDate = booking.StartDate,
+                            endDate = booking.EndDate,
+                            roomName = room.Name
+                        }).ToList();
+
+        var listBookingDurations = new List<GetBookingDurationDto>();
+
+        foreach (var entity in entities)
+        {
+            TimeSpan duration = entity.endDate - entity.startDate;
+
+            // Count the number of weekends within the duration
+            int totalDays = (int)duration.TotalDays;
+            int weekends = 0;
+
+            for (int i = 0; i <= totalDays; i++)
+            {
+                var currentDate = entity.startDate.AddDays(i);
+                if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    weekends++;
+                }
+            }
+
+            // Calculate the duration without weekends
+            TimeSpan bookingLength = duration - TimeSpan.FromDays(weekends);
+
+            var bookingDurationDto = new GetBookingDurationDto
+            {
+                RoomGuid = entity.guid,
+                RoomName = entity.roomName,
+                BookingLength = $"{bookingLength.Days} Hari"
+            };
+
+            listBookingDurations.Add(bookingDurationDto);
+        }
+
+        return listBookingDurations;
+    }
+
+    public IEnumerable<BookingRoomTodayDto> BookingNow()
+    {
+        var bookings = _bookingRepository.GetAll();
+        if (bookings == null)
+        {
+            return null; // No Booking  found
+        }
+
+
+        // versi LINQ
+        var employees = _employeeRepository.GetAll();
+        var rooms = _roomRepository.GetAll();
+
+        var bookingNow = (
+            from booking in bookings
+            join employee in employees on booking.EmployeeGuid equals employee.Guid
+            join room in rooms on booking.RoomGuid equals room.Guid
+            where booking.StartDate <= DateTime.Now.Date && booking.EndDate >= DateTime.Now
+            select new BookingRoomTodayDto
+            {
+                BookingGuid = booking.Guid,
+                RoomName = room.Name,
+                Status = booking.Status,
+                Floor = room.Floor,
+                BookedBy = employee.FirstName + " " + employee.LastName,
+            }
+        ).ToList();
+
+        return bookingNow;
+    }
+
+    public IEnumerable<DetailBookingDto>? BookingDetail()
+    {
+        var books = (from b in _bookingRepository.GetAll()
+                     join e in _employeeRepository.GetAll() on b.EmployeeGuid equals e.Guid
+                     join r in _roomRepository.GetAll() on b.RoomGuid equals r.Guid
+                     select new DetailBookingDto
+                     {
+                         Guid = b.Guid,
+                         BookedNik = e.Nik,
+                         BookedBy = e.FirstName + " " + e.LastName,
+                         StartDate = DateTime.Now,
+                         EndDate = b.EndDate,
+                         RoomName = r.Name,
+                         Status = b.Status,
+                         Remarks = b.Remarks,
+                     }).ToList();
+        if (!books.Any())
+        {
+            return null;
+        }
+
+        return books;
+    }
+
+    public DetailBookingDto? BookingDetail(Guid guid)
+    {
+        var books = BookingDetail();
+
+        var bookByGuid = books!.FirstOrDefault(book => book.Guid == guid);
+
+        return bookByGuid;
+
+    }
+
+}
 
