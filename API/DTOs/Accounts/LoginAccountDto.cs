@@ -11,7 +11,6 @@ namespace API.DTOs.Accounts
         [Required]
         [PasswordPolicy]
         public string Password { get; set; }
-      /*  [Required]
-        public string ConfirmPassword { get; set; }*/
+    
     }
 }

@@ -173,7 +173,7 @@ public class AccountService
 
     public GetRegisterAccountDto? Register(RegisterAccountDto registerAccountDto)
     {
-    /*    EmployeeService employeService = new EmployeeService(_employeeRepository);*/
+ 
         using var transaction = _bookingdBContext.Database.BeginTransaction();
         try
         {
@@ -310,13 +310,6 @@ public class AccountService
             return "-2";
         }
 
-        /*var toDto = new LoginAccountDto
-       {
-           Email = loginAccountDto.Email,
-           Password = loginAccountDto.Password,
-       };
-
-       return toDto;*/
     }
     public int ForgetPassword(ForgetPasswordDto forgotPassword)
     {

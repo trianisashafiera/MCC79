@@ -6,7 +6,10 @@ namespace API.Repositories;
 public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
 {
     private readonly BookingDbContext _context;
-    public EmployeeRepository(BookingDbContext context) : base(context) { }
+    public EmployeeRepository(BookingDbContext context) : base(context) 
+    {
+        _context = context;
+    }
 
     //Login
     public Employee? GetAccountByEmail(string email)
@@ -14,16 +17,6 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
         return _context.Set<Employee>().SingleOrDefault(e => e.Email == email);
     }
 
-   /* //OTP
-    public IEnumerable<Employee> GetByEmail(string email)
-    {
-        return _context.Set<Employee>().Where(u => u.Email == email);
-    }
-    public IEnumerable<Employee> GetByName(string name)
-    {
-        return _context.Set<Employee>().Where(u => u.FirstName.Contains(name));*//*
-    }*/
-    //change password
     public Employee? GetByEmailAndPhoneNumber(string data)
     {
         return _context.Set<Employee>().FirstOrDefault(e => e.PhoneNumber == data || e.Email == data);
